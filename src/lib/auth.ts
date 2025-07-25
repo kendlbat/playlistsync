@@ -24,7 +24,7 @@ export const auth = betterAuth({
     },
 
     secret: import.meta.env.BETTER_AUTH_SECRET,
-    baseURL: import.meta.env.PUBLIC_BETTER_AUTH_URL,
+    baseURL: import.meta.env.BETTER_AUTH_URL,
 
     session: {
         cookieCache: {

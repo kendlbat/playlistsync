@@ -15,7 +15,7 @@ interface ImportMetaEnv {
     readonly SPOTIFY_CLIENT_SECRET: string;
     readonly SPOTIFY_CLIENT_CALLBACK_URL: string;
     readonly BETTER_AUTH_SECRET: string;
-    readonly PUBLIC_BETTER_AUTH_URL: string;
+    readonly BETTER_AUTH_URL: string;
     readonly DATABASE_URL: string;
 }
 
