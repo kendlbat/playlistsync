@@ -1,0 +1,19 @@
+---
+import { LoginForm } from "@/components/login-form";
+import Layout from "@/layouts/Layout.astro";
+
+const session = Astro.locals.session;
+if (session) {
+    return Astro.redirect("/");
+}
+
+export const prerender = false;
+---
+
+<Layout title="Login">
+    <div class="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
+        <div class="w-full max-w-sm">
+            <LoginForm client:only="react" />
+        </div>
+    </div>
+</Layout>

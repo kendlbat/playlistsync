@@ -1,0 +1,8 @@
+services:
+    postgres:
+        image: postgres:latest
+        container_name: plsync-postgres
+        environment:
+            - POSTGRES_PASSWORD=8HBcGK4mODc7wvI9uAOgL4qRFKzxxBFT9WXS4BHjopwtJiymqAT6hGur3jPaq7IN98HI0tix6Oxnc8hxC5fYcoWM9j125CGE7zoK
+        ports:
+            - "5432:5432"
