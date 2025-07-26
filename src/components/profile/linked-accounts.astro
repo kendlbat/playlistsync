@@ -1,0 +1,10 @@
+---
+import { auth } from "@/lib/auth";
+import { LinkedAccountsDataless } from "./linked-accounts";
+
+const accounts = await auth.api.listUserAccounts({
+    headers: Astro.request.headers,
+});
+---
+
+<LinkedAccountsDataless client:load accounts={accounts} />

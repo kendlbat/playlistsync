@@ -1,5 +1,6 @@
 import { authClient } from "@/lib/auth-client";
 import { Button } from "./ui/button";
+import { navigate } from "astro:transitions/client";
 
 export const User: React.FC = () => {
     const {
@@ -23,7 +24,7 @@ export const User: React.FC = () => {
                         variant="outline"
                         onClick={() => {
                             authClient.signOut().then(() => {
-                                window.location.href = "/login";
+                                navigate("/login");
                             });
                         }}
                     >
