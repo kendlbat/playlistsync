@@ -1,0 +1,33 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import SpotifyUserPlaylists from "@/components/spotify/userPlaylists.astro";
+import { auth } from "@/lib/auth";
+
+const user = Astro.locals.user;
+const session = Astro.locals.session;
+
+if (!user || !session) {
+    return Astro.redirect("/login");
+}
+
+const searchParams = new URL(Astro.request.url).searchParams;
+
+const limit = 20;
+const offset = Number(searchParams.get("page")) * limit || 0;
+
+const account = (await auth.api.listUserAccounts({
+    headers: Astro.request.headers,
+})).find(
+    (account) => account.provider === "spotify"
+);
+
+if (!account) {
+    return Astro.redirect("/profile/linked-accounts#spotify")
+}
+
+
+---
+
+<Layout title="Spotify Playlists">
+    <SpotifyUserPlaylists {limit} {offset} {account}  />
+</Layout>

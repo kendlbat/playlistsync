@@ -6,9 +6,6 @@ import LinkedAccounts from "@/components/profile/linked-accounts.astro";
 const user = Astro.locals.user;
 const session = Astro.locals.session;
 
-console.log(process.env.POSTGRES_PASSWORD);
-console.log(import.meta.env.POSTGRES_PASSWORD);
-
 if (!user || !session) {
     return Astro.redirect("/login");
 }

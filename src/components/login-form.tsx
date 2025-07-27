@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { authClient } from "@/lib/auth-client";
 import { FaGoogle, FaSpotify } from "react-icons/fa";
+import { providers } from "@/lib/globals";
 
 export function LoginForm({
     className,
@@ -26,32 +27,24 @@ export function LoginForm({
                     <form action="javascript:void(0);">
                         <div className="flex flex-col gap-6">
                             <div className="flex flex-col gap-3">
-                                <Button
-                                    variant="outline"
-                                    className="w-full cursor-pointer"
-                                    onClick={() => {
-                                        authClient.signIn.social({
-                                            provider: "google",
-                                            callbackURL: "/",
-                                        });
-                                    }}
-                                >
-                                    <FaGoogle />
-                                    Login with Google
-                                </Button>
-                                <Button
-                                    variant="outline"
-                                    className="w-full cursor-pointer"
-                                    onClick={() => {
-                                        authClient.signIn.social({
-                                            provider: "spotify",
-                                            callbackURL: "/",
-                                        });
-                                    }}
-                                >
-                                    <FaSpotify />
-                                    Login with Spotify
-                                </Button>
+                                {Object.entries(providers).map(
+                                    ([id, provider]) => (
+                                        <Button
+                                            key={id}
+                                            variant="outline"
+                                            className="w-full cursor-pointer"
+                                            onClick={() => {
+                                                authClient.signIn.social({
+                                                    provider: id,
+                                                    callbackURL: "/",
+                                                });
+                                            }}
+                                        >
+                                            <provider.icon />
+                                            Login with {provider.name}
+                                        </Button>
+                                    )
+                                )}
                             </div>
                         </div>
                     </form>

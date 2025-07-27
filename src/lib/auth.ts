@@ -2,6 +2,7 @@ import { betterAuth } from "better-auth";
 
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "@/db";
+import { providers } from "./globals";
 
 export const auth = betterAuth({
     database: drizzleAdapter(db, {
@@ -20,6 +21,14 @@ export const auth = betterAuth({
         spotify: {
             clientId: import.meta.env.SPOTIFY_CLIENT_ID,
             clientSecret: import.meta.env.SPOTIFY_CLIENT_SECRET,
+        },
+    },
+
+    account: {
+        accountLinking: {
+            allowDifferentEmails: true,
+            trustedProviders: Object.keys(providers),
+            enabled: true,
         },
     },
 

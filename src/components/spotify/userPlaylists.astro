@@ -1,0 +1,48 @@
+---
+import { auth } from "@/lib/auth";
+import {
+    SpotifyApi,
+    type AccessToken,
+    type MaxInt,
+    type Page,
+    type Playlist,
+    type TrackItem,
+} from "@spotify/web-api-ts-sdk";
+import { SpotifyUserPlaylists } from "./userPlaylists.tsx";
+
+interface Props {
+    account: Awaited<ReturnType<typeof auth.api.listUserAccounts>>[number];
+    limit: MaxInt<50>;
+    offset: number;
+}
+
+const { account, limit, offset } = Astro.props;
+
+
+const accessToken = await auth.api.getAccessToken({
+    headers: Astro.request.headers,
+    body: {
+        providerId: "spotify",
+        accountId: account.id,
+    }
+})
+const spotify = SpotifyApi.withAccessToken(import.meta.env.SPOTIFY_CLIENT_ID, {
+    access_token: accessToken.accessToken,
+    expires_in: (accessToken.accessTokenExpiresAt ? (accessToken.accessTokenExpiresAt.getTime() - (new Date()).getTime()) : 0),
+    token_type: "Bearer",
+    refresh_token: accessToken.idToken!!
+});
+
+let playlists: Page<Playlist<TrackItem>> | undefined;
+try {
+    playlists = await spotify.playlists.getUsersPlaylists(
+        account.accountId,
+        limit,
+        offset
+    );
+} catch {
+    // Oh no! Anyway...
+}
+---
+
+{playlists !== undefined ? <SpotifyUserPlaylists {playlists} /> : <div>Failed to load playlists.</div>}
