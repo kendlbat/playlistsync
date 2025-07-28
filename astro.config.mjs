@@ -1,25 +1,32 @@
 // @ts-check
-import { defineConfig } from 'astro/config';
+import { defineConfig } from "astro/config";
 
-import react from '@astrojs/react';
+import react from "@astrojs/react";
 
-import tailwindcss from '@tailwindcss/vite';
+import tailwindcss from "@tailwindcss/vite";
 
-
-import node from '@astrojs/node';
-
+import node from "@astrojs/node";
 
 // https://astro.build/config
 export default defineConfig({
-  integrations: [react()],
+    integrations: [
+        react({
+            experimentalReactChildren: true,
+        }),
+    ],
 
-  vite: {
-    plugins: [tailwindcss()]
-  },
+    image: {
+        domains: [
+            "i.scdn.co", // Spotify
+        ],
+    },
 
+    vite: {
+        plugins: [tailwindcss()],
+    },
 
-  output: 'server',
-  adapter: node({
-    mode: 'standalone'
-  })
+    output: "server",
+    adapter: node({
+        mode: "standalone",
+    }),
 });

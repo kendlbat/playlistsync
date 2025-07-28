@@ -2,13 +2,12 @@
 import { auth } from "@/lib/auth";
 import {
     SpotifyApi,
-    type AccessToken,
     type MaxInt,
     type Page,
     type Playlist,
     type TrackItem,
 } from "@spotify/web-api-ts-sdk";
-import { SpotifyUserPlaylists } from "./userPlaylists.tsx";
+import { Link } from "../ui/link";
 
 interface Props {
     account: Awaited<ReturnType<typeof auth.api.listUserAccounts>>[number];
@@ -18,31 +17,69 @@ interface Props {
 
 const { account, limit, offset } = Astro.props;
 
-
 const accessToken = await auth.api.getAccessToken({
     headers: Astro.request.headers,
     body: {
         providerId: "spotify",
         accountId: account.id,
-    }
-})
+    },
+});
 const spotify = SpotifyApi.withAccessToken(import.meta.env.SPOTIFY_CLIENT_ID, {
     access_token: accessToken.accessToken,
-    expires_in: (accessToken.accessTokenExpiresAt ? (accessToken.accessTokenExpiresAt.getTime() - (new Date()).getTime()) : 0),
+    expires_in:
+        accessToken.accessTokenExpiresAt ?
+            accessToken.accessTokenExpiresAt.getTime() - new Date().getTime()
+        :   0,
     token_type: "Bearer",
-    refresh_token: accessToken.idToken!!
+    refresh_token: accessToken.idToken!!,
 });
 
 let playlists: Page<Playlist<TrackItem>> | undefined;
+
+const page = Math.floor(offset / limit);
 try {
     playlists = await spotify.playlists.getUsersPlaylists(
         account.accountId,
         limit,
         offset
     );
-} catch {
+} catch (e) {
     // Oh no! Anyway...
+    console.error(e);
 }
 ---
 
-{playlists !== undefined ? <SpotifyUserPlaylists {playlists} /> : <div>Failed to load playlists.</div>}
+{
+    playlists !== undefined ?
+        <div>
+            {playlists.items.map((p) => (
+                <div class="flex">
+                    <div class="size-12">
+                        <img
+                            width={600}
+                            height={600}
+                            class="rounded-[2px] lg:rounded-[4px]"
+                            src={p.images[0].url}
+                            alt={p.name}
+                        />
+                    </div>
+                    <p>{p.name}</p>
+                </div>
+            ))}
+            <Link
+                variant="outline"
+                disabled={page <= 0}
+                href={`?page=${page - 1}`}
+            >
+                Previous
+            </Link>
+            <Link
+                variant="outline"
+                disabled={(page + 1) * limit >= playlists.total}
+                href={`?page=${page + 1}`}
+            >
+                Next
+            </Link>
+        </div>
+    :   <div>Failed to load playlists.</div>
+}

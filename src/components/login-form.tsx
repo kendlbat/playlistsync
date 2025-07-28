@@ -32,7 +32,7 @@ export function LoginForm({
                                         <Button
                                             key={id}
                                             variant="outline"
-                                            className="w-full cursor-pointer"
+                                            className="w-full"
                                             onClick={() => {
                                                 authClient.signIn.social({
                                                     provider: id,

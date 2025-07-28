@@ -9,5 +9,10 @@
             "database": "postgres",
             "username": "postgres"
         }
-    ]
+    ],
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.removeUnusedImports": "always",
+        "source.organizeImports": "always"
+    }
 }

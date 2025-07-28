@@ -4,6 +4,7 @@ import {
     timestamp,
     boolean,
     integer,
+    primaryKey,
 } from "drizzle-orm/pg-core";
 
 export const user = pgTable("user", {
@@ -21,6 +22,24 @@ export const user = pgTable("user", {
         .$defaultFn(() => new Date())
         .notNull(),
 });
+
+export const syncPlaylist = pgTable("sync_playlists", {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+        .notNull()
+        .references(() => user.id, { onDelete: "cascade" }),
+    identifier: text("identifier").notNull(),
+});
+
+export const providerSyncPlaylist = pgTable(
+    "provider_sync_playlists",
+    {
+        provider: text("provider"),
+        id: text("id").references(() => syncPlaylist.id),
+        providerId: text("provider_id").notNull(),
+    },
+    (table) => [primaryKey({ columns: [table.id, table.provider] })]
+);
 
 export const session = pgTable("session", {
     id: text("id").primaryKey(),

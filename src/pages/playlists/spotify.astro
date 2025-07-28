@@ -1,6 +1,6 @@
 ---
-import Layout from "@/layouts/Layout.astro";
 import SpotifyUserPlaylists from "@/components/spotify/userPlaylists.astro";
+import Layout from "@/layouts/Layout.astro";
 import { auth } from "@/lib/auth";
 
 const user = Astro.locals.user;
@@ -12,7 +12,7 @@ if (!user || !session) {
 
 const searchParams = new URL(Astro.request.url).searchParams;
 
-const limit = 20;
+const limit = 2;
 const offset = Number(searchParams.get("page")) * limit || 0;
 
 const account = (await auth.api.listUserAccounts({
@@ -25,6 +25,7 @@ if (!account) {
     return Astro.redirect("/profile/linked-accounts#spotify")
 }
 
+Astro.response.headers.set("Cache-Control", "public, max-age=300, s-maxage=300");
 
 ---
 

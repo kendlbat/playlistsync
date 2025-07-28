@@ -13,6 +13,7 @@ import {
 import { DialogHeader } from "../ui/dialog";
 import { toast } from "sonner";
 import { useState } from "react";
+import { FaExclamation, FaExclamationCircle } from "react-icons/fa";
 
 export const LinkedAccountsDataless: React.FC<{
     accounts: {
@@ -38,7 +39,6 @@ export const LinkedAccountsDataless: React.FC<{
                         <Button
                             key={`unlinked-${id}`}
                             variant="outline"
-                            className="cursor-pointer"
                             onClick={() => {
                                 authClient.linkSocial({
                                     provider: id,
@@ -57,10 +57,7 @@ export const LinkedAccountsDataless: React.FC<{
                 return (
                     <Dialog key={`linked-${id}`}>
                         <DialogTrigger asChild>
-                            <Button
-                                variant="outline"
-                                className="cursor-pointer"
-                            >
+                            <Button variant="outline">
                                 <provider.icon />
                                 Unlink {provider.name}
                             </Button>
@@ -77,30 +74,44 @@ export const LinkedAccountsDataless: React.FC<{
                             </DialogHeader>
                             <DialogFooter>
                                 <DialogClose asChild>
-                                    <Button
-                                        variant="outline"
-                                        className="cursor-pointer"
-                                    >
-                                        Cancel
-                                    </Button>
+                                    <Button variant="outline">Cancel</Button>
                                 </DialogClose>
                                 <DialogClose asChild>
                                     <Button
-                                        className="cursor-pointer"
                                         type="submit"
                                         onClick={async () => {
-                                            await authClient.unlinkAccount({
-                                                providerId: linked.provider,
-                                            });
-                                            setAccounts(
-                                                accounts.filter((a) => {
-                                                    a.provider !==
-                                                        linked.provider;
-                                                })
-                                            );
-                                            toast(
-                                                `Successfully unlinked ${provider.name}`
-                                            );
+                                            try {
+                                                await authClient
+                                                    .unlinkAccount({
+                                                        providerId:
+                                                            linked.provider,
+                                                    })
+                                                    .then((r) => {
+                                                        if (r.error)
+                                                            throw new Error(
+                                                                r.error.statusText
+                                                            );
+
+                                                        setAccounts(
+                                                            accounts.filter(
+                                                                (a) => {
+                                                                    a.provider !==
+                                                                        linked.provider;
+                                                                }
+                                                            )
+                                                        );
+                                                        toast(
+                                                            `Successfully unlinked ${provider.name}`
+                                                        );
+                                                    });
+                                            } catch (e) {
+                                                toast(
+                                                    `Failed to unlink ${provider.name}`,
+                                                    {
+                                                        icon: <FaExclamation />,
+                                                    }
+                                                );
+                                            }
                                         }}
                                     >
                                         Unlink

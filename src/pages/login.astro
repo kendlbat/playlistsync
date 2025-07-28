@@ -7,6 +7,11 @@ if (session) {
     return Astro.redirect("/");
 }
 
+// Fix for Spotify not accepting localhost as callback URL
+if (!Astro.request.url.startsWith(import.meta.env.BETTER_AUTH_URL)) {
+    return Astro.redirect(import.meta.env.BETTER_AUTH_URL);
+}
+
 ---
 
 <Layout title="Login">
